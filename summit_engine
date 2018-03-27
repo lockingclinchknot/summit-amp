@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Greg Senger">
+<title>The Summit at Grand Rockies :: Booking Engine</title>
+
+<!-- Style Sheet used and needed by the JQuery UI Library for the Booking Engine Calender -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<link rel="stylesheet" type="text/css" href="styles/be_style.css" />
+
+</head>
+
+<body>
+	<section class="be_wrapper" style="width: 230px;">
+		<h2>Reserve Now</h2>
+		<form class="be_form" id="resLauncher" target="_blank" method="get" action="https://secure.webrez.com/hotel/1759">
+			<input type="hidden" id="date_from" name="date_from" />
+			<input type="hidden" id="date_to" name="date_to" />
+			<div class="be_field_block lrg_block">
+				<label>Arrival Date:</label>
+				<input id="arr_date" readonly type="text" />
+			</div>
+			<div class="be_field_block lrg_block">
+				<label>Departure Date:</label>
+				<input id="dept_date" readonly type="text" />
+			</div>
+			<div class="be_float_wrapper">
+				<div class="be_field_block med_block">
+					<label>Adults:</label>
+					<select id="num_adults" name="num_adults">
+						<option value="1">1</option>
+						<option selected="selected" value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+					</select>
+				</div>
+				<div class="be_field_block med_block">
+					<label>Promo Code:</label>
+					<input id="access_code" name="access_code" type="text" />
+				</div>
+			</div>
+			<div class="be_bttn_wrapper">
+				<input role="button" onClick="return grBookingFormSubmit();" type="submit" value="Check Availability">
+			</div>
+			<div class="be_error">
+				Please fill in your arrival date, departure date and the number of adults staying in order to check availability.
+			</div>
+		</form>
+	</section>
+    
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    
+    <!-- JQuery UI Library for Booking Engine Calender -->
+    <!-- The below JQuery UI Libray allows us to use the JQuery calender called "Date Picker".
+    For information on how to use
+    the "Date Picker please visit http://jqueryui.com/datepicker/#default you can also find the API
+    documentation there as well."-->
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js">
+    </script>
+
+    <script type="text/javascript">
+		/**
+		* The below function simply initializes a new "datepicker" object with a date 
+		* format and a animation on each of the date elements. The "datepicker" object
+		* comes from the JQuery UI Library which is brought in above.
+		* 
+		* The "dateFormat" option sets the date format to be displayed on
+		* the booking form to the user. When the date info gets passed to the
+		* booking engine page it must be in the format of: YYYYMMDD, example: 20170520
+		* (2017 May 20). The format which is displayed to the user is not always the
+		* same format needed on the booking engine page. In this case we use the
+		* "altFormat" and "altField" options in order to set a new date format which
+		* can be passed along to the booking engine page. The "altFormat" option sets
+		* a new date format for the date set by the user and must be used in
+		* conjunction with the "altField" option. The "altField" option specifies a new
+		* field to pur the new date format in. In the cases below we use hidden fields
+		* which are used to pass along the date info to the booking engine page. This
+		* stops us from having to manually format the dates in JS.
+		* 
+		* The "onSelect" option allows us to perform actions once a arrival date
+		* has been selected. We use this to set the departure date calendars
+		* "minDate" option to the arrival date + 1.
+		* 
+		* For more information please visit:
+		* https://api.jqueryui.com/1.8/datepicker/#option-minDate
+		**/
+		$(function()
+		{
+			$("#arr_date").datepicker({
+				dateFormat: "dd-M-yy",
+				showAnim: "slideDown",
+				altFormat: "yymmdd",
+				altField: "#date_from",
+				onSelect: function()
+				{
+					if($("#arr_date").datepicker("getDate"))
+					{
+						var date = $("#arr_date").datepicker("getDate");
+						date.setDate(date.getDate()+1);
+						$("#dept_date").datepicker("option", "minDate", date);
+					}
+				}
+			});
+
+			$("#dept_date").datepicker({dateFormat: "dd-M-yy", showAnim: "slideDown", altFormat: "yymmdd", altField: "#date_to"});
+		});
+    </script>
+	
+	<script>
+		function grBookingFormSubmit()
+		{
+			"use strict";
+			if($("#arr_date").val() !== "" && $("#dept_date").val() !== "")
+			{
+				$(".be_error").css("display", "none");
+				return true;
+			}
+			else
+			{
+				$(".be_error").css("display", "block");
+				return false;
+			}
+		}
+	</script>
+    
+</body>
+</html>
